@@ -12,7 +12,7 @@ export function create(bus: IMakeBus, config: IConfig) {
     .then(connection => {
       status.on("shutdown", () => {
         connection.close().then(() => {
-          status.emit("close");
+          status.emit("closed");
         });
       });
 

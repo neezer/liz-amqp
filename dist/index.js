@@ -13,7 +13,7 @@ function create(bus, config) {
         .then(connection => {
         status.on("shutdown", () => {
             connection.close().then(() => {
-                status.emit("close");
+                status.emit("closed");
             });
         });
         return Promise.all([
