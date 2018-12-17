@@ -13,7 +13,12 @@ async function create(conn, emit, config) {
     debug("assering subscribe topology");
     await exchange_1.assertExchange(channel, config);
     const queue = await channel.assertQueue(config.queue.name, config.queue.options);
-    await channel.bindQueue(queue.queue, config.exchange.name, "#");
+    if (config.subscriptionKeys.length === 0) {
+        process.stderr.write("WARNING: no subscription keys provided!");
+    }
+    else {
+        await Promise.all(config.subscriptionKeys.map(key => channel.bindQueue(queue.queue, config.exchange.name, key)));
+    }
     return channel.consume(queue.queue, onMessage(emit, config), { noAck: true });
 }
 exports.create = create;

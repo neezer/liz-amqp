@@ -4,6 +4,7 @@ export interface IConfig {
   appId: string;
   publishPrefix: string;
   url: string;
+  subscriptionKeys: string[];
   exchange: {
     name: string;
     type: string;

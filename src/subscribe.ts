@@ -20,7 +20,15 @@ export async function create(conn: Connection, emit: Emit, config: IConfig) {
     config.queue.options
   );
 
-  await channel.bindQueue(queue.queue, config.exchange.name, "#");
+  if (config.subscriptionKeys.length === 0) {
+    process.stderr.write("WARNING: no subscription keys provided!");
+  } else {
+    await Promise.all(
+      config.subscriptionKeys.map(key =>
+        channel.bindQueue(queue.queue, config.exchange.name, key)
+      )
+    );
+  }
 
   return channel.consume(queue.queue, onMessage(emit, config), { noAck: true });
 }
