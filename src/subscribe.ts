@@ -1,27 +1,18 @@
 import { Action, Emit, makeAction } from "@neezer/liz";
-import { Connection, ConsumeMessage } from "amqplib";
+import { Channel, ConsumeMessage } from "amqplib";
 import makeDebug from "debug";
 import { IConfig } from "./config";
-import { assertExchange } from "./exchange";
 
 const debug = makeDebug("liz-amqp");
 
-export async function create(conn: Connection, emit: Emit, config: IConfig) {
-  debug("asserting subscribe channel");
-
-  const channel = await conn.createChannel();
-
-  debug("assering subscribe topology");
-
-  await assertExchange(channel, config);
-
+export async function create(channel: Channel, emit: Emit, config: IConfig) {
   const queue = await channel.assertQueue(
     config.queue.name,
     config.queue.options
   );
 
   if (config.subscriptionKeys.length === 0) {
-    process.stderr.write("WARNING: no subscription keys provided!");
+    process.stdout.write("WARNING: no subscription keys provided!");
   } else {
     await Promise.all(
       config.subscriptionKeys.map(key => {
@@ -54,11 +45,11 @@ function onMessage(emit: Emit, config: IConfig) {
 
     try {
       const body = JSON.parse(rawBody);
-
-      // FIXME allow passing in upstream meta
-      const action = actionMaker(body.type, body.payload);
+      const action = actionMaker(body.type, body.payload, body.meta);
 
       if (Action.assert(action)) {
+        debug("received type=%s", action.type);
+
         emit(action);
       }
     } catch (error) {

@@ -7,14 +7,8 @@ const core_1 = require("@most/core");
 const scheduler_1 = require("@most/scheduler");
 const liz_1 = require("@neezer/liz");
 const debug_1 = __importDefault(require("debug"));
-const exchange_1 = require("./exchange");
 const debug = debug_1.default("liz-amqp");
 async function create(conn, stream, config) {
-    debug("asserting publish channel");
-    await conn.createChannel().then(ch => {
-        debug("assering publish topology");
-        return exchange_1.assertExchange(ch, config);
-    });
     const publishes = liz_1.combinators.shiftType(liz_1.combinators.matching(config.publishPrefix, stream));
     const publish = (action) => {
         const routingKey = action.type;

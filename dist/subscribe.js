@@ -5,19 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const liz_1 = require("@neezer/liz");
 const debug_1 = __importDefault(require("debug"));
-const exchange_1 = require("./exchange");
 const debug = debug_1.default("liz-amqp");
-async function create(conn, emit, config) {
-    debug("asserting subscribe channel");
-    const channel = await conn.createChannel();
-    debug("assering subscribe topology");
-    await exchange_1.assertExchange(channel, config);
+async function create(channel, emit, config) {
     const queue = await channel.assertQueue(config.queue.name, config.queue.options);
     if (config.subscriptionKeys.length === 0) {
-        process.stderr.write("WARNING: no subscription keys provided!");
+        process.stdout.write("WARNING: no subscription keys provided!");
     }
     else {
-        await Promise.all(config.subscriptionKeys.map(key => channel.bindQueue(queue.queue, config.exchange.name, key)));
+        await Promise.all(config.subscriptionKeys.map(key => {
+            debug(`binding key "${key}"`);
+            return channel.bindQueue(queue.queue, config.exchange.name, key);
+        }));
     }
     return channel.consume(queue.queue, onMessage(emit, config), { noAck: true });
 }
@@ -37,9 +35,9 @@ function onMessage(emit, config) {
         const rawBody = message.content.toString();
         try {
             const body = JSON.parse(rawBody);
-            // FIXME allow passing in upstream meta
-            const action = actionMaker(body.type, body.payload);
+            const action = actionMaker(body.type, body.payload, body.meta);
             if (liz_1.Action.assert(action)) {
+                debug("received type=%s", action.type);
                 emit(action);
             }
         }

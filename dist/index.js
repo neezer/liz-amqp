@@ -9,21 +9,24 @@ const publish_1 = require("./publish");
 const subscribe_1 = require("./subscribe");
 function create(bus, config) {
     const status = new events_1.default();
-    amqplib_1.connect(config.url)
-        .then(connection => {
+    setup(status, bus, config);
+    return status;
+}
+exports.create = create;
+async function setup(status, bus, config) {
+    try {
+        const connection = await amqplib_1.connect(config.url);
         status.on("shutdown", () => {
             connection.close().then(() => {
                 status.emit("closed");
             });
         });
-        return Promise.all([
-            publish_1.create(connection, bus.stream, config),
-            subscribe_1.create(connection, bus.emit, config)
-        ]);
-    })
-        .catch(error => {
-        // TODO connection retry kickoff
-    });
-    return status;
+        const channel = await connection.createChannel();
+        channel.assertExchange(config.exchange.name, config.exchange.type, config.exchange.options);
+        await publish_1.create(connection, bus.stream, config);
+        await subscribe_1.create(channel, bus.emit, config);
+    }
+    catch (error) {
+        // TODO do something interesting
+    }
 }
-exports.create = create;

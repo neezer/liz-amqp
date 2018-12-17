@@ -8,22 +8,32 @@ import { create as createSubscribe } from "./subscribe";
 export function create(bus: IMakeBus, config: IConfig) {
   const status = new EventEmitter();
 
-  connect(config.url)
-    .then(connection => {
-      status.on("shutdown", () => {
-        connection.close().then(() => {
-          status.emit("closed");
-        });
-      });
-
-      return Promise.all([
-        createPublish(connection, bus.stream, config),
-        createSubscribe(connection, bus.emit, config)
-      ]);
-    })
-    .catch(error => {
-      // TODO connection retry kickoff
-    });
+  setup(status, bus, config);
 
   return status;
+}
+
+async function setup(status: EventEmitter, bus: IMakeBus, config: IConfig) {
+  try {
+    const connection = await connect(config.url);
+
+    status.on("shutdown", () => {
+      connection.close().then(() => {
+        status.emit("closed");
+      });
+    });
+
+    const channel = await connection.createChannel();
+
+    channel.assertExchange(
+      config.exchange.name,
+      config.exchange.type,
+      config.exchange.options
+    );
+
+    await createPublish(connection, bus.stream, config);
+    await createSubscribe(channel, bus.emit, config);
+  } catch (error) {
+    // TODO do something interesting
+  }
 }
