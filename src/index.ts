@@ -5,23 +5,25 @@ import { IConfig } from "./config";
 import { create as createPublish } from "./publish";
 import { create as createSubscribe } from "./subscribe";
 
-export async function create(bus: IMakeBus, config: IConfig) {
+export function create(bus: IMakeBus, config: IConfig) {
   const status = new EventEmitter();
 
-  try {
-    const connection = await connect(config.url);
-
-    await createPublish(connection, bus.stream, config);
-    await createSubscribe(connection, bus.emit, config);
-
-    status.on("shutdown", () => {
-      connection.close().then(() => {
-        status.emit("close");
+  connect(config.url)
+    .then(connection => {
+      status.on("shutdown", () => {
+        connection.close().then(() => {
+          status.emit("close");
+        });
       });
+
+      return Promise.all([
+        createPublish(connection, bus.stream, config),
+        createSubscribe(connection, bus.emit, config)
+      ]);
+    })
+    .catch(error => {
+      // TODO connection retry kickoff
     });
-  } catch (error) {
-    // TODO connection retry kickoff
-  }
 
   return status;
 }

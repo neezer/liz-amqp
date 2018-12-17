@@ -7,21 +7,23 @@ const amqplib_1 = require("amqplib");
 const events_1 = __importDefault(require("events"));
 const publish_1 = require("./publish");
 const subscribe_1 = require("./subscribe");
-async function create(bus, config) {
+function create(bus, config) {
     const status = new events_1.default();
-    try {
-        const connection = await amqplib_1.connect(config.url);
-        await publish_1.create(connection, bus.stream, config);
-        await subscribe_1.create(connection, bus.emit, config);
+    amqplib_1.connect(config.url)
+        .then(connection => {
         status.on("shutdown", () => {
             connection.close().then(() => {
                 status.emit("close");
             });
         });
-    }
-    catch (error) {
+        return Promise.all([
+            publish_1.create(connection, bus.stream, config),
+            subscribe_1.create(connection, bus.emit, config)
+        ]);
+    })
+        .catch(error => {
         // TODO connection retry kickoff
-    }
+    });
     return status;
 }
 exports.create = create;
