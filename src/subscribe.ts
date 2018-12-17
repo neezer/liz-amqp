@@ -24,9 +24,11 @@ export async function create(conn: Connection, emit: Emit, config: IConfig) {
     process.stderr.write("WARNING: no subscription keys provided!");
   } else {
     await Promise.all(
-      config.subscriptionKeys.map(key =>
-        channel.bindQueue(queue.queue, config.exchange.name, key)
-      )
+      config.subscriptionKeys.map(key => {
+        debug(`binding key "${key}"`);
+
+        return channel.bindQueue(queue.queue, config.exchange.name, key);
+      })
     );
   }
 
