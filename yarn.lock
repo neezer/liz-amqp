@@ -55,15 +55,6 @@
     "@most/prelude" "^1.7.2"
     "@neezer/action" "^1.0.0"
 
-"@neezer/action-validate@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@neezer/action-validate/-/action-validate-1.0.0.tgz#5d4bac4b3840c9f434f867e091d7d028fbf30ab4"
-  integrity sha512-yiU9FqEFRZpo7+QKLLatUdWQVmccStWCWlPH78Hmw0Svy3R2zV8b9e/1lSJf2OV5Hsu10dazIuCMKshAg/WcDg==
-  dependencies:
-    "@neezer/action" "^1.0.0"
-    ajv "^6.6.2"
-    axios "^0.18.0"
-
 "@neezer/action@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@neezer/action/-/action-1.0.0.tgz#5edb8591f3057eca21adfea4870f1a9470a75ae5"
@@ -72,9 +63,9 @@
     nanoid "^2.0.0"
 
 "@neezer/liz@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@neezer/liz/-/liz-1.4.0.tgz#40a5b0f048216f4e9d9bfbcb93c1da239634c91c"
-  integrity sha512-ksC/83ziBenzAIyALEDntFliNG01m/F/NO+GgjrJwDZq8RkcZnebmH/W4ngVOXoDS79DmWT6IvfH+nLVwV6UzQ==
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@neezer/liz/-/liz-1.6.0.tgz#6fef3ebb45ab949f9cb31b5ad136251ff3019e50"
+  integrity sha512-0t1b/N7MqHbXB3gCjfn7fS57bKkPG1a/2OgHrY7rY0848T91FC9GVn+PpAfnMa6+8Mjs5TL5Su1J3ZTadKmzEg==
   dependencies:
     "@most/core" "^1.3.2"
     "@most/scheduler" "^1.2.1"
@@ -260,7 +251,7 @@ aggregate-error@^1.0.0:
     clean-stack "^1.0.0"
     indent-string "^3.0.0"
 
-ajv@^6.5.5, ajv@^6.6.2:
+ajv@^6.5.5:
   version "6.6.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.6.2.tgz#caceccf474bf3fc3ce3b147443711a24063cc30d"
   integrity sha512-FBHEW6Jf5TB9MGBgUUA9XHkTbjXYfAUjY43ACMfmdMRHniyoMHjHjzD50OK8LGDWQwp4rWEsIq5kEqq7rvIM1g==
@@ -456,14 +447,6 @@ aws4@^1.8.0:
   version "1.8.0"
   resolved "https://registry.npmjs.org/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
   integrity sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ==
-
-axios@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
-  integrity sha1-MtU+SFHv3AoRmTts0AB4nXDAUQI=
-  dependencies:
-    follow-redirects "^1.3.0"
-    is-buffer "^1.1.5"
 
 babel-code-frame@^6.22.0:
   version "6.26.0"
@@ -1088,7 +1071,7 @@ dateformat@^3.0.0:
   resolved "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-debug@3.1.0, debug@=3.1.0:
+debug@3.1.0:
   version "3.1.0"
   resolved "https://registry.npmjs.org/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
@@ -1564,13 +1547,6 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
-
-follow-redirects@^1.3.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.6.0.tgz#d12452c031e8c67eb6637d861bfc7a8090167933"
-  integrity sha512-4Oh4eI3S9OueVV41AgJ1oLjpaJUhbJ7JDGOMhe0AFqoSejl5Q2nn3eGglAzRUKVKZE8jG5MNn66TjCJMAnpsWA==
-  dependencies:
-    debug "=3.1.0"
 
 for-each@~0.3.3:
   version "0.3.3"

@@ -1,4 +1,3 @@
-import { makeValidator } from "@neezer/action-validate";
 import { Action, Emit, makeAction } from "@neezer/liz";
 import { Channel, ConsumeMessage } from "amqplib";
 import makeDebug from "debug";
@@ -40,7 +39,6 @@ function onMessage(
   config: IConfig
 ) {
   const actionMaker = makeAction(config.appId);
-  const validate = makeValidator(config.schemas.url);
 
   return async (message: ConsumeMessage | null) => {
     if (message === null) {
@@ -63,7 +61,7 @@ function onMessage(
       if (Action.assert(action)) {
         debug("received type=%s", action.type);
 
-        await validate(action);
+        await config.validate(action);
 
         emit(action);
       }

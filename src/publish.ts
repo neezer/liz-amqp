@@ -1,6 +1,5 @@
 import { runEffects, tap } from "@most/core";
 import { newDefaultScheduler } from "@most/scheduler";
-import { makeValidator } from "@neezer/action-validate";
 import { Action, ActionStream, combinators, Emit } from "@neezer/liz";
 import { Connection } from "amqplib";
 import makeDebug from "debug";
@@ -14,14 +13,13 @@ export async function create(
   emitError: Emit<Error>,
   config: IConfig
 ) {
-  const validate = makeValidator(config.schemas.url);
   const publishes = combinators.shiftType(
     combinators.matching(config.publishPrefix, stream)
   );
 
   const publish = async (action: Action) => {
     try {
-      await validate(action);
+      await config.validate(action);
     } catch (error) {
       emitError(error);
     }

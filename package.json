@@ -28,7 +28,6 @@
   "dependencies": {
     "@most/core": "^1.3.2",
     "@most/scheduler": "^1.2.1",
-    "@neezer/action-validate": "^1.0.0",
     "amqplib": "^0.5.3",
     "debug": "^4.1.0"
   },

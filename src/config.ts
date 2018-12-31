@@ -1,3 +1,4 @@
+import { Action } from "@neezer/liz";
 import { Options } from "amqplib";
 
 export interface IConfig {
@@ -5,9 +6,6 @@ export interface IConfig {
   publishPrefix: string;
   url: string;
   subscriptionKeys: string[];
-  schemas: {
-    url: string;
-  };
   exchange: {
     name: string;
     type: string;
@@ -17,4 +15,5 @@ export interface IConfig {
     name: string;
     options: Options.AssertQueue;
   };
+  validate: (action: Action) => Promise<boolean>;
 }
