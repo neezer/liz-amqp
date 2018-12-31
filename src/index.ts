@@ -14,6 +14,8 @@ export function create(bus: IMakeBus, config: IConfig) {
 }
 
 async function setup(status: EventEmitter, bus: IMakeBus, config: IConfig) {
+  const { stream, emit, emitError } = bus;
+
   try {
     const connection = await connect(config.url);
 
@@ -31,8 +33,8 @@ async function setup(status: EventEmitter, bus: IMakeBus, config: IConfig) {
       config.exchange.options
     );
 
-    await createPublish(connection, bus.stream, config);
-    await createSubscribe(channel, bus.emit, config);
+    await createPublish(connection, stream, emitError, config);
+    await createSubscribe(channel, emit, emitError, config);
   } catch (error) {
     // TODO do something interesting
   }

@@ -1,3 +1,4 @@
+import { makeValidator } from "@neezer/action-validate";
 import { Action, Emit, makeAction } from "@neezer/liz";
 import { Channel, ConsumeMessage } from "amqplib";
 import makeDebug from "debug";
@@ -5,7 +6,12 @@ import { IConfig } from "./config";
 
 const debug = makeDebug("liz-amqp");
 
-export async function create(channel: Channel, emit: Emit, config: IConfig) {
+export async function create(
+  channel: Channel,
+  emit: Emit<Action>,
+  emitError: Emit<Error>,
+  config: IConfig
+) {
   const queue = await channel.assertQueue(
     config.queue.name,
     config.queue.options
@@ -23,13 +29,20 @@ export async function create(channel: Channel, emit: Emit, config: IConfig) {
     );
   }
 
-  return channel.consume(queue.queue, onMessage(emit, config), { noAck: true });
+  return channel.consume(queue.queue, onMessage(emit, emitError, config), {
+    noAck: true
+  });
 }
 
-function onMessage(emit: Emit, config: IConfig) {
+function onMessage(
+  emit: Emit<Action>,
+  emitError: Emit<Error>,
+  config: IConfig
+) {
   const actionMaker = makeAction(config.appId);
+  const validate = makeValidator(config.schemas.url);
 
-  return (message: ConsumeMessage | null) => {
+  return async (message: ConsumeMessage | null) => {
     if (message === null) {
       return;
     }
@@ -50,10 +63,12 @@ function onMessage(emit: Emit, config: IConfig) {
       if (Action.assert(action)) {
         debug("received type=%s", action.type);
 
+        await validate(action);
+
         emit(action);
       }
     } catch (error) {
-      // TODO do something useful with the JSON.parse error
+      emitError(error);
     }
   };
 }

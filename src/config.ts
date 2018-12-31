@@ -5,6 +5,9 @@ export interface IConfig {
   publishPrefix: string;
   url: string;
   subscriptionKeys: string[];
+  schemas: {
+    url: string;
+  };
   exchange: {
     name: string;
     type: string;
