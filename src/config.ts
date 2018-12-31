@@ -15,5 +15,5 @@ export interface IConfig {
     name: string;
     options: Options.AssertQueue;
   };
-  validate: (action: Action) => Promise<boolean>;
+  validate: (action: Action) => Promise<void>;
 }
