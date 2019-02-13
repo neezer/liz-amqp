@@ -13,6 +13,7 @@
     "@neezer/liz": "^1.0.0"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^7.5.0",
     "@most/types": "^1.0.1",
     "@neezer/liz": "^1.4.0",
     "@types/amqplib": "^0.5.9",
