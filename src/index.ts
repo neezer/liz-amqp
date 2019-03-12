@@ -16,8 +16,13 @@ export function create(bus: IMakeBus, config: IConfig) {
 async function setup(status: EventEmitter, bus: IMakeBus, config: IConfig) {
   const { stream, emit, emitError } = bus;
 
+  const cfg: IConfig = {
+    validate: async _ => undefined,
+    ...config
+  };
+
   try {
-    const connection = await connect(config.url);
+    const connection = await connect(cfg.url);
 
     status.on("shutdown", () => {
       connection.close().then(() => {
@@ -28,13 +33,13 @@ async function setup(status: EventEmitter, bus: IMakeBus, config: IConfig) {
     const channel = await connection.createChannel();
 
     channel.assertExchange(
-      config.exchange.name,
-      config.exchange.type,
-      config.exchange.options
+      cfg.exchange.name,
+      cfg.exchange.type,
+      cfg.exchange.options
     );
 
-    await createPublish(connection, stream, emitError, config);
-    await createSubscribe(channel, emit, emitError, config);
+    await createPublish(connection, stream, emitError, cfg);
+    await createSubscribe(channel, emit, emitError, cfg);
   } catch (error) {
     // TODO do something interesting
   }
