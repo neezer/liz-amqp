@@ -1,11 +1,11 @@
 import { IMakeBus } from "@neezer/liz";
 import { connect } from "amqplib";
 import EventEmitter from "events";
-import { IConfig } from "./config";
+import { IConfig, IPartialConfig } from "./config";
 import { create as createPublish } from "./publish";
 import { create as createSubscribe } from "./subscribe";
 
-export function create(bus: IMakeBus, config: IConfig) {
+export function create(bus: IMakeBus, config: IPartialConfig) {
   const status = new EventEmitter();
 
   setup(status, bus, config);
@@ -13,7 +13,11 @@ export function create(bus: IMakeBus, config: IConfig) {
   return status;
 }
 
-async function setup(status: EventEmitter, bus: IMakeBus, config: IConfig) {
+async function setup(
+  status: EventEmitter,
+  bus: IMakeBus,
+  config: IPartialConfig
+) {
   const { stream, emit, emitError } = bus;
 
   const cfg: IConfig = {
