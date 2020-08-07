@@ -10,12 +10,16 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@neezer/liz": "^1.6.1"
+    "@neezer/liz": "^1.7.3",
+    "@neezer/action": "^1.2.0",
+    "@neezer/action-combinators": "^1.0.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^7.5.0",
     "@most/types": "^1.0.1",
     "@neezer/liz": "^1.7.3",
+    "@neezer/action": "^1.2.0",
+    "@neezer/action-combinators": "^1.0.1",
     "@types/amqplib": "^0.5.9",
     "@types/debug": "^0.0.31",
     "@types/tape": "^4.2.32",
